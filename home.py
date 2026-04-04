@@ -20,19 +20,19 @@ if 'df_bb' not in st.session_state:
 # Navigation Logic and Order
 pages = {
     "Data": [
-        st.Page("2_Data_Visualizer.py", title="Visualizer")
+        st.Page("pages/2_Data_Visualizer.py", title="Visualizer")
     ],
     "Keyword Search": [
-        st.Page("3_Policy_Name.py", title="Policy Name"),
-        st.Page("4_Resource_Name.py", title="Resource Name"),
-        st.Page("5_Name.py", title="Name")
+        st.Page("pages/3_Policy_Name.py", title="Policy Name"),
+        st.Page("pages/4_Resource_Name.py", title="Resource Name"),
+        st.Page("pages/5_Name.py", title="Name")
     ],
     "Risk Assessment": [
-        st.Page("6_Vulnerability_Assessment.py", title="Rationale"),
-        st.Page("7_Analysis.py", title="Analysis"),
+        st.Page("pages/6_Vulnerability_Assessment.py", title="Rationale"),
+        st.Page("pages/7_Analysis.py", title="Analysis"),
     ],
     "Results": [
-        st.Page("8_Solution.py", title="Solution")
+        st.Page("pages/8_Solution.py", title="Solution")
     ],
 }
 
