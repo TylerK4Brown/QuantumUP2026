@@ -1,0 +1,23 @@
+1.	ACM Certificate should have a PQC compliant key algorithm specified
+2.	Application Load Balancer HTTPS listeners should use TLS version 1.2 or higher
+3.	Application Load Balancer HTTPS listeners should use TLS version 1.3
+4.	Application Load Balancer should use a PQC-compliant security policy
+5.	Application Load Balancer should use TLS version 1.2 or higher
+6.	Application Load Balancer should use TLS version 1.3
+7.	Classic Load Balancer should use a PQC complaint security policy
+8.	Classic Load Balancer should use TLS version 1.2 or higher
+9.	CloudFront distribution should not allow insecure TLS protocols
+10.	CloudFront distribution should use PQC compliant security policy
+11.	CloudFront distribution should use a PQC-compliant TLS version
+12.	Ensure Browser Post-Quantum Key Agreement is enabled for Chrome and Edge
+13.	Ensure Nginx is configured with Post-Quantum Cryptography (PQC) hybrid curves and OpenSSL OQS provider is active
+14.	Ensure SSH server uses post-quantum cryptography (PQC) key exchange algorithms
+15.	Ensure system-wide crypto policy is set to FUTURE
+16.	KMS key should use a PQC compliant key specification
+17.	Network Load Balancer should use a PQC compliant security policy
+18.	Network Load Balancer should use TLS version 1.2 or higher 
+19.	Network Load Balancer should use TLS version 1.3
+20.	OpenSearch (ElasticSearch) domain should enforce the latest TLS security policy
+21.	RDS PostgreSQL cluster should use TLS version 1.2 or higher
+22.	REST API Gateway custom domains should use TLS version 1.2 or higher
+23.	Transfer Family should use a PQC compliant security policy
