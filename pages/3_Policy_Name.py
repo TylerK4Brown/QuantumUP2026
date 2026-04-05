@@ -26,4 +26,3 @@ else:
     valid_rows = st.session_state.df_bb
 
 st.write(valid_rows.reset_index(drop=True))
-
