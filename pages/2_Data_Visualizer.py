@@ -35,29 +35,36 @@ t1_df["state_numerical"] = t1_df["state"].map(state_mapping)
 
 # Present filtering options for t1 dataframe
 options = st.multiselect(
-    "What would you like to visualize?:",
+    "What would you like to visualize?",
     ["Port", "Severity", "State"]
 )
-items = st.slider("How many entries?", 1, len(t1_df.index))
+
+
+min_num = 0
+max_num = 100
+
+
+col1, col2 = st.columns(2)
+with col1:
+    min_num = st.number_input("Min", min_value=0, max_value=len(t1_df.index-1), value=0)
+with col2:
+    max_num = st.number_input("Max", min_value=1, max_value=len(t1_df.index), value=100)
+
 
 # Change data based on selection
-df_filtered = pd.DataFrame()
-if options:
+df_port = pd.DataFrame()
+df_severity = pd.DataFrame()
+df_state = pd.DataFrame()
 
+if options:
     if "Port" in options:
-        df_filtered = pd.concat([df_filtered, t1_df["port"]], axis=1)
-        # df_filtered = pd.merge(df_filtered, t1_df["port"], on="port")
+        df_port = pd.concat([df_port, t1_df["port"]], axis=1)
+        st.bar_chart(df_port.iloc[min_num: max_num])
 
     if "Severity" in options:
-        df_filtered = pd.concat([df_filtered, t1_df["severity_numerical"]], axis=1)
-        # df_filtered = pd.merge(df_filtered, t1_df["severity_numerical"], on="severity_numerical")
+        df_severity = pd.concat([df_severity, t1_df["severity_numerical"]], axis=1)
+        st.bar_chart(df_severity.iloc[min_num: max_num])
 
     if "State" in options:
-        df_filtered = pd.concat([df_filtered, t1_df["state_numerical"]], axis=1)
-        # df_filtered = pd.merge(df_filtered, t1_df["state_numerical"], on="state_numerical")
-
-
-st.write(df_filtered.head(items))
-
-# Render graphs
-st.bar_chart(df_filtered.head(items))
+        df_state = pd.concat([df_state, t1_df["state_numerical"]], axis=1)
+        st.bar_chart(df_state.iloc[min_num: max_num])
