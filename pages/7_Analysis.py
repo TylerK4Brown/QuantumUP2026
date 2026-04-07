@@ -2,14 +2,17 @@ import streamlit as st
 import pandas as pd
 from ollama import Client
 
+st.title('Vulnerability Analysis')
+st.subheader("This page provides a small analysis of why these vulnerabilities are critical in a PQC environment.")
+st.subheader("Select a resource name from the drop-down menu to receive a vulnerability briefing for that resource: ")
 df_bbtable_severities = st.session_state['df_bbtable_severities']
 df_bbtable = st.session_state['df_bb']
 
 # Creates an option selection for the top 10 resources with the most failed assessments of severity 'Medium'.
 resource_names = df_bbtable_severities.sort_values(by=['MEDIUM', 'LOW', 'INFORMATIONAL'], ascending=False).head(10)['Resource Name'].tolist()
 option = st.selectbox(
-    '''Select a resource for a vulnerability briefing:''',
-    resource_names
+    label="Resource name",
+    options=resource_names
 )
 
 # Load the policy names and the single native type into a list
@@ -31,7 +34,7 @@ for policy in df_bbtable_policynames:
 # This link will teach you how to create an Ollama API key so you can fill it in here
 client = Client(
     host="https://ollama.com",
-    headers={'Authorization': 'Bearer ' + 'INSERT API KEY HERE!!!!111!!1!'}
+    headers={'Authorization': 'Bearer ' + '546abedea6394b8da5aba49756f94c0e.HjoRHEIsE-zWCyGj3LC757L3'}
 )
 
 # System prompt provides instructions to the model on how to generate the vulnerability briefing
