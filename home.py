@@ -21,7 +21,10 @@ pages = {
         st.Page("pages/1_Welcome.py", title="Welcome")
     ],
     "Data": [
-        st.Page("pages/2_Data_Visualizer.py", title="Visualizer")
+        st.Page("pages/2_Vulnerabilities_By_Port.py", title="Vulnerabilities by Port"),
+        st.Page("pages/3_Vulnerabilities_By_Severity.py", title="Vulnerabilities by Severity"),
+        st.Page("pages/4_Vulnerabilities_By_State.py", title="Vulnerabilities by State"),
+        st.Page("pages/5_Vulnerabilities_By_Resource.py", title="Vulnerabilities by Resource"),
     ],
     "Tools": [
         st.Page("pages/3_Search_By_Field.py", title="Search By Field"),
