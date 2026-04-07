@@ -1,76 +1,114 @@
 import streamlit as st
-import pandas as pd
+import altair as alt
 
-# MIGHT NEED TWO SEPARATE GRAPHS FOR T1T2 AND BB
-# BB IS SORTED VIA RESOURCE
-# may be able to store information as a value
 
-# OLD CODE
-# bg_combined = pd.DataFrame({
-#     't1': st.session_state.df_t1['severity'].value_counts(),
-#     't2': st.session_state.df_t2['severity'].value_counts(),
-#     'bb': st.session_state.df_bb['Severity'].value_counts()
-# })
-#st.write(bg_combined.head())
-#st.bar_chart(bg_combined.head(20000))
+st.set_page_config(layout="wide")
 
-# Load all the data
-# t12_dataframe = pd.DataFrame({
-#     't1': st.session_state.df_t1['severity'].value_counts(),
-#     't2': st.session_state.df_t2['severity'].value_counts(),
-#     'bb': st.session_state.df_bb['Severity'].value_counts()
-#
-# })
 
-# Load all data
+
+# LOAD AND PROCESS ALL DATA
 t1_df = st.session_state['df_t1']
 bb_df = st.session_state['df_bb']
+t1_df.columns = [
+    'uuid', 'asset_id', 'asset_name', 'description', 'category',
+    'plugin_id', 'plugin_name', 'field1', 'field2', 'service_uuid',
+    'port', 'protocol', 'severity', 'status'
+]
+port_status_counts = t1_df.groupby(['port', 'status']).size().reset_index(name='count')
 
 
-numerical = st.checkbox("Convert nominal data to numerical data?")
 
-if numerical:
-    # Convert nominal values to numeric values
-    severity_mapping = {"Info": 1, "Low": 2, "Medium": 3, "High": 4, "Critical": 5}
-    t1_df["severity_copy"] = t1_df["severity"].map(severity_mapping)
-    state_mapping = {"NEW": 1, "ACTIVE": 2, "RESURFACED": 3}
-    t1_df["state_copy"] = t1_df["state"].map(state_mapping)
+# SHOW VULNERABILITIES BY PORT
+st.subheader("Vulnerabilities by Port")
+min_port = int(port_status_counts['port'].min())
+max_port = int(port_status_counts['port'].max())
+port_range = st.slider("Select port range", min_value=min_port, max_value=max_port, value=(min_port, max_port))
+filtered_data = port_status_counts[(port_status_counts['port'] >= port_range[0]) &
+                                   (port_status_counts['port'] <= port_range[1])]
+st.write(f"Showing ports from {port_range[0]} to {port_range[1]}")
+
+sort_by_total = st.checkbox("Sort ports by total vulnerabilities (highest first)", value=False)
+port_totals = filtered_data.groupby('port')['count'].sum().reset_index(name='total_count')
+
+if sort_by_total:
+    sorted_ports = port_totals.sort_values('total_count', ascending=False)['port'].tolist()
 else:
-    t1_df["severity_copy"] = t1_df["severity"]
-    t1_df["state_copy"] = t1_df["state"]
+    sorted_ports = sorted(port_totals['port'].tolist())
 
-# Present filtering options for t1 dataframe
-options = st.multiselect(
-    "What would you like to visualize?",
-    ["Port", "Severity", "State"]
+zoom_pan = alt.selection_interval(bind='scales')
+color=alt.Color('status:N', title='Status', scale=alt.Scale(domain=['ACTIVE','NEW'], range=['red','blue']))
+chart = alt.Chart(filtered_data).mark_bar().encode(
+    x=alt.X('port:O', title='Port', sort=sorted_ports),
+    y=alt.Y('count:Q', title='Number of Vulnerabilities'),
+    color=alt.Color(
+        'status:N',
+        title='Status',
+        scale=alt.Scale(
+            domain=['ACTIVE','NEW','RESURFACED'],  # include all statuses
+            range=['red','blue','orange']          # assign colors
+        )
+    ),
+    tooltip=['port','status','count']
+).add_selection(
+    zoom_pan
 )
+st.altair_chart(chart, use_container_width=True)
+
+show_table_1 = st.checkbox("Show vulnerabilities by port table")
+if show_table_1:
+    st.dataframe(port_status_counts)
 
 
-min_num = 0
-max_num = 100
 
-st.write(f"Dataset size: [0 : {t1_df.index.stop}]")
-col1, col2 = st.columns(2)
-with col1:
-    min_num = st.number_input("Min", min_value=0, max_value=len(t1_df.index-1), value=0)
-with col2:
-    max_num = st.number_input("Max", min_value=1, max_value=len(t1_df.index), value=100)
+# SEVERITY CHART
+st.divider()
+severity_counts = t1_df.groupby(['severity', 'status']).size().reset_index(name='count')
+st.subheader("Vulnerabilities by Severity")
+zoom_pan_sev = alt.selection_interval(bind='scales')
+color=alt.Color('status:N', title='Status',
+                scale=alt.Scale(domain=['ACTIVE','NEW'], range=['red','blue']))
+severity_chart = alt.Chart(severity_counts).mark_bar().encode(
+    x=alt.X('severity:N', title='Severity'),
+    y=alt.Y('count:Q', title='Number of Vulnerabilities'),
+    color=alt.Color(
+        'status:N',
+        title='Status',
+        scale=alt.Scale(
+            domain=['ACTIVE', 'NEW', 'RESURFACED'],  # include all statuses
+            range=['red', 'blue', 'orange']
+        )
+    ),
+    tooltip=['severity', 'status', 'count']
+).add_selection(
+    zoom_pan_sev
+)
+st.altair_chart(severity_chart, use_container_width=True)
+
+show_table_2 = st.checkbox("Show severity count table")
+if show_table_2:
+    st.dataframe(severity_counts)
 
 
-# Change data based on selection
-df_port = pd.DataFrame()
-df_severity = pd.DataFrame()
-df_state = pd.DataFrame()
 
-if options:
-    if "Port" in options:
-        df_port = pd.concat([df_port, t1_df["port"]], axis=1)
-        st.bar_chart(df_port.iloc[min_num: max_num])
+# STATE CHART
+st.divider()
+state_counts = t1_df.groupby(['status', 'severity']).size().reset_index(name='count')
+st.subheader("Vulnerabilities by State")
+zoom_pan_state = alt.selection_interval(bind='scales')
+state_chart = alt.Chart(state_counts).mark_bar().encode(
+    x=alt.X('status:N', title='State'),
+    y=alt.Y('count:Q', title='Number of Vulnerabilities'),
+    color=alt.Color('severity:N', title='Severity'),
+    tooltip=['status', 'severity', 'count']
+).add_selection(
+    zoom_pan_state
+)
+st.altair_chart(state_chart, use_container_width=True)
 
-    if "Severity" in options:
-        df_severity = pd.concat([df_severity, t1_df["severity_copy"]], axis=1)
-        st.bar_chart(df_severity.iloc[min_num: max_num])
+show_table_3 = st.checkbox("Show vulnerabilities by state table")
+if show_table_3:
+    st.dataframe(state_counts)
 
-    if "State" in options:
-        df_state = pd.concat([df_state, t1_df["state_copy"]], axis=1)
-        st.bar_chart(df_state.iloc[min_num: max_num])
+
+
+# TODO: DISPLAY DATA BB RESOURCE FOR BB TABLE
