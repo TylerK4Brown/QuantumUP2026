@@ -5,8 +5,6 @@ st.set_page_config(
     page_title="Home",
 )
 
-st.write("# Welcome!")
-
 # Initialization for session state
 if 'df_t1' not in st.session_state:
     st.session_state['df_t1'] = pd.read_csv("data/t1_quantum_scrubbed.csv")
@@ -19,6 +17,9 @@ if 'df_bb' not in st.session_state:
 
 # Navigation Logic and Order
 pages = {
+    "Introduction": [
+        st.Page("pages/1_Welcome.py", title="Welcome")
+    ],
     "Data": [
         st.Page("pages/2_Data_Visualizer.py", title="Visualizer")
     ],
