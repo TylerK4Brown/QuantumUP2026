@@ -22,18 +22,15 @@ pages = {
     "Data": [
         st.Page("pages/2_Data_Visualizer.py", title="Visualizer")
     ],
-    "Keyword Search": [
-        st.Page("pages/3_Policy_Name.py", title="Policy Name"),
-        st.Page("pages/4_Resource_Name.py", title="Resource Name"),
-        st.Page("pages/5_Name.py", title="Name")
+    "Tools": [
+        st.Page("pages/3_Search_By_Field.py", title="Search By Field"),
+        st.Page("pages/4_Custom_View.py", title="Custom View"),
+        st.Page("pages/5_Name_Search.py", title="Name Search")
     ],
     "Risk Assessment": [
         st.Page("pages/6_Vulnerability_Assessment.py", title="Rationale"),
         st.Page("pages/7_Analysis.py", title="Analysis"),
-    ],
-    "Results": [
-        st.Page("pages/8_Solution.py", title="Solution")
-    ],
+    ]
 }
 
 pg = st.navigation(pages)
