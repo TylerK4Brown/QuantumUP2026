@@ -2,6 +2,23 @@ import streamlit as st
 import pandas as pd
 from ollama import Client
 
+files_uploaded = True
+
+if st.session_state["df_t1"] is None:
+    st.info("Please upload a t1 dataset file!")
+    files_uploaded = False
+if st.session_state["df_t2"] is None:
+    st.info("Please upload a t2 dataset file!")
+    files_uploaded = False
+if st.session_state["df_bb"] is None:
+    st.info("Please upload a bb dataset file!")
+    files_uploaded = False
+
+if not files_uploaded:
+    st.write("All files must be uploaded for the dashboard to function. Please do so via the \"welcome\" page.")
+    st.stop()
+
+
 st.title('Vulnerability Analysis')
 st.subheader("This page provides a small analysis of why these vulnerabilities are critical in a PQC environment.")
 st.subheader("Select a resource name from the drop-down menu to receive a vulnerability briefing for that resource: ")

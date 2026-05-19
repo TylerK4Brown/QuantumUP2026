@@ -7,13 +7,13 @@ st.set_page_config(
 
 # Initialization for session state
 if 'df_t1' not in st.session_state:
-    st.session_state['df_t1'] = pd.read_csv("data/t1_quantum_scrubbed.csv")
+    st.session_state['df_t1'] = None
 
 if 'df_t2' not in st.session_state:
-    st.session_state['df_t2'] = pd.read_csv("data/t2_quantum_scrubbed.csv")
+    st.session_state['df_t2'] = None
 
 if 'df_bb' not in st.session_state:
-    st.session_state['df_bb'] = pd.read_csv("data/BB_quantum_scrubbed.csv")
+    st.session_state['df_bb'] = None
 
 # Navigation Logic and Order
 pages = {
@@ -24,7 +24,6 @@ pages = {
         st.Page("pages/2_Vulnerabilities_By_Port.py", title="Vulnerabilities by Port"),
         st.Page("pages/3_Vulnerabilities_By_Severity.py", title="Vulnerabilities by Severity"),
         st.Page("pages/4_Vulnerabilities_By_State.py", title="Vulnerabilities by State"),
-        st.Page("pages/5_Vulnerabilities_By_Resource.py", title="Vulnerabilities by Resource"),
     ],
     "Tools": [
         st.Page("pages/3_Search_By_Field.py", title="Search By Field"),
@@ -36,6 +35,13 @@ pages = {
         st.Page("pages/7_Analysis.py", title="Analysis"),
     ]
 }
+
+intro_page= {
+    "Introduction": [
+        st.Page("pages/1_Welcome.py", title="Welcome")
+    ]
+}
+
 
 pg = st.navigation(pages)
 pg.run()

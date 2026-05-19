@@ -2,6 +2,22 @@ import streamlit as st
 import altair as alt
 
 
+files_uploaded = True
+
+if st.session_state["df_t1"] is None:
+    st.info("Please upload a t1 dataset file!")
+    files_uploaded = False
+if st.session_state["df_t2"] is None:
+    st.info("Please upload a t2 dataset file!")
+    files_uploaded = False
+if st.session_state["df_bb"] is None:
+    st.info("Please upload a bb dataset file!")
+    files_uploaded = False
+
+if not files_uploaded:
+    st.write("All files must be uploaded for the dashboard to function. Please do so via the \"welcome\" page.")
+    st.stop()
+
 st.set_page_config(layout="wide")
 
 
